@@ -1,6 +1,7 @@
 import os
 from hashlib import sha1
 
+
 def canonic(filename):
     if filename == "<" + filename[1:-1] + ">":
         return filename
@@ -48,6 +49,7 @@ class Breakpoint(object):
             'cond': getattr(self, 'condition', None),
             'fun': getattr(self, 'function', None)
         }
+
 
 class LineBreakpoint(Breakpoint):
     """Simple breakpoint that breaks if in file at line"""

@@ -1,14 +1,17 @@
-from gi.repository import Gtk, GtkSource, GLib, GdkPixbuf, Gdk
 import os
+from gi.repository import Gtk, GLib, GdkPixbuf
+
 MODULE_DIRECTORY = os.path.dirname(__file__)
 
-VARIABLE_PIXBUF = GdkPixbuf.Pixbuf.new_from_file(os.path.join(MODULE_DIRECTORY, 
+VARIABLE_PIXBUF = GdkPixbuf.Pixbuf.new_from_file(os.path.join(MODULE_DIRECTORY,
     "images", "debugger", "variable.png"))
+
 
 def idle_add_decorator(func):
     def callback(*args):
         GLib.idle_add(func, *args)
     return callback
+
 
 class InterpretersDialog:
 
@@ -35,6 +38,7 @@ class InterpretersDialog:
             self._interpreters_dialog.destroy()
             return None
 
+
 class ContextBox(Gtk.HPaned):
 
     def __init__(self):
@@ -59,15 +63,15 @@ class ContextBox(Gtk.HPaned):
                                                           "Globals", "Global variables"])
         for g in context['environment']['globals'].keys():
             val, vtype = context['environment']['globals'][g]
-            it = self._variables_treestore.append(globals_it, [VARIABLE_PIXBUF,
+            self._variables_treestore.append(globals_it, [VARIABLE_PIXBUF,
                                                             g, vtype + ': ' + val])
 
         # now add locals
         for k in context['environment']['locals'].keys():
             val, vtype = context['environment']['locals'][k]
-            it = self._variables_treestore.append(None, [VARIABLE_PIXBUF,
+            self._variables_treestore.append(None, [VARIABLE_PIXBUF,
                                                       k, vtype + ': ' + val])
-    
+
     def write_stdout(self, msg):
         self._console_textbuffer = self._console_textview.get_buffer()
         start, end = self._console_textbuffer.get_bounds()

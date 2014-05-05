@@ -7,6 +7,7 @@ if PY3:
     integer_types = (int,)
     string_types = (str,)
     long = int
+
     def execfile(fname, globs, locs=None):
         exec(compile(open(fname).read(), fname, 'exec'), globs, locs or globs)
 else:

@@ -1,18 +1,13 @@
+import os
+import time
+import threading
+
 from json_serializer import JsonClient
 from multiprocessing import Queue
 
-import os
-import time
+from breakpoint import LineBreakpoint
 
-import sys
-
-import threading
-import sys
-
-print(sys.path)
 from qdb import Frontend
-
-from .breakpoint import LineBreakpoint
 
 
 class LoggingPipeWrapper:
@@ -21,12 +16,12 @@ class LoggingPipeWrapper:
         self.__pipe = pipe
 
     def send(self, data):
-        print("PIPE:send: %s %s %s %s" % (data.get("id"), data.get("method"), data.get("args"), repr(data.get("result",""))[:40]))
+        print("PIPE:send: %s %s %s %s" % (data.get("id"), data.get("method"), data.get("args"), repr(data.get("result", ""))[:40]))
         self.__pipe.send(data)
 
     def recv(self, *args, **kwargs):
         data = self.__pipe.recv(*args, **kwargs)
-        print("PIPE:recv: %s %s %s %s" % (data.get("id"), data.get("method"), data.get("args"), repr(data.get("result",""))[:40]))
+        print("PIPE:recv: %s %s %s %s" % (data.get("id"), data.get("method"), data.get("args"), repr(data.get("result", ""))[:40]))
         return data
 
     def close(self):
@@ -115,7 +110,6 @@ class CallbackFrontend(Frontend):
                     self.post_event = True
         finally:
             pass
-
 
     """
     End Frontend API
@@ -209,13 +203,12 @@ class CallbackFrontend(Frontend):
             # wait for interaction (only retry i times to not block forever):
             i = 10000
             while not self.interacting and i:
-                # allow wx process some events 
+                # allow wx process some events
                 #wx.SafeYield()      # safe = user input "disabled"
                 #self.OnIdle(None)   # force pipe processing
                 i -= 1              # decrement safety counter
             if self.interacting:
-                # send the method request                
-                ret = fn(self, *args, **kwargs)
+                # send the method request
 
                 if self.quitting:
                     # clean up interaction marker
@@ -236,7 +229,7 @@ class CallbackFrontend(Frontend):
         self.interacting = False
         self.messages_queue.put(("clear-interaction", ()))
         # interaction is done, clean current line marker
-        #wx.PostEvent(self.gui, DebugEvent(EVT_DEBUG_ID, 
+        #wx.PostEvent(self.gui, DebugEvent(EVT_DEBUG_ID,
         #                                 (None, None, None, None)))
 
 #    def check_running_code(self, func_name):
@@ -425,7 +418,7 @@ class CallbackFrontend(Frontend):
 #        if statement == "" or not self.attached:
 #            # 1. shell seems to call Exec without statement on init
 #            # 2. if not debuging, exec on the current local wx shell
-#            pass  
+#            pass
 #        elif not self.interacting:
 #            #wx.Bell()
 #            return u'*** no debugger interaction (stop first!)'
@@ -469,4 +462,3 @@ class CallbackFrontend(Frontend):
 #                return self.get_call_tip(expr)
 #            except qdb.RPCError, e:
 #                return u'*** %s' % unicode(e)
-
