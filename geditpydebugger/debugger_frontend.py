@@ -209,6 +209,7 @@ class CallbackFrontend(Frontend):
                 i -= 1              # decrement safety counter
             if self.interacting:
                 # send the method request
+                fn(self, *args, **kwargs)
 
                 if self.quitting:
                     # clean up interaction marker
